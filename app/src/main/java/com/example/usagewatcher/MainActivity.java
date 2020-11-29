@@ -1,6 +1,8 @@
 package com.example.usagewatcher;
 
 import android.annotation.SuppressLint;
+import android.app.usage.EventStats;
+import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -18,10 +20,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private OnBootReceiver mReceiver = new OnBootReceiver();
+    private Intent accelerometer_intent;
 
 
     @Override
@@ -38,13 +42,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
 //        getCallLog();
-        getAppUsageData();
+//        getAppUsageData();
+        accelerometer_intent = new Intent(MainActivity.this, AccelerometerService.class);
+        startService(accelerometer_intent);
+
     }
 
 
     @SuppressLint("WrongConstant")
     public void getAppUsageData() {
 
+        // init the object that I will use to query the data I need...
         UsageStatsManager usageStatsManager;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             usageStatsManager = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
@@ -52,13 +60,27 @@ public class MainActivity extends AppCompatActivity {
             usageStatsManager = (UsageStatsManager) getApplicationContext().getSystemService("usagestats");
         }
 
-        // try to get the app usage data now
+        // define the time range in which I want to fetch data
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);
+        calendar.add(Calendar.MINUTE, -1); // TODO: specify how long back I want data for
         long start = calendar.getTimeInMillis();
         long end = System.currentTimeMillis();
-        List<UsageStats> stats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, start, end);
 
+        // get app usage data in aggregated form now
+        Map<String, UsageStats> aggregatedStats = usageStatsManager.queryAndAggregateUsageStats(start, end);
+        // TODO: go through this map and store all the data that is required: https://developer.android.com/reference/android/app/usage/UsageStats
+        for (String package_name: aggregatedStats.keySet()) {
+            UsageStats stats = aggregatedStats.get(package_name);
+        }
+
+        // events
+        UsageEvents eventsList = usageStatsManager.queryEvents(start, end);
+
+        while (eventsList.hasNextEvent()) {
+            UsageEvents.Event event = new UsageEvents.Event();
+            eventsList.getNextEvent(event);
+            Log.d("EVENTLIST", event.getPackageName() + " " + String.valueOf(event.getEventType()));
+        }
 
     }
 
