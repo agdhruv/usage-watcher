@@ -11,21 +11,21 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class AccelerometerService extends Service implements SensorEventListener {
+public class GyroscopeService extends Service implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor sensor;
-    private static String TAG = AccelerometerService.class.getSimpleName();
+    private static String TAG = GyroscopeService.class.getSimpleName();
 
-    public AccelerometerService() {
+    public GyroscopeService() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        requestAccelerometerUpdates();
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        requestGyroscopeUpdates();
 
         return START_STICKY;
     }
@@ -55,16 +55,16 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onDestroy() {
-        removeAccelerometerUpdates();
+        removeGyroscopeUpdates();
     }
 
-    private void requestAccelerometerUpdates() {
+    private void requestGyroscopeUpdates() {
         // registers the listener
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         // TODO: see how many values we are getting per second. can we change the sampling frequency?
     }
 
-    public void removeAccelerometerUpdates() {
+    public void removeGyroscopeUpdates() {
         // unregisters the listener
         if (sensorManager != null) {
             sensorManager.unregisterListener(this);

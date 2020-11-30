@@ -25,7 +25,9 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private OnBootReceiver mReceiver = new OnBootReceiver();
+
     private Intent accelerometer_intent;
+    private Intent gyroscope_intent;
 
 
     @Override
@@ -43,8 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
 //        getCallLog();
 //        getAppUsageData();
+
         accelerometer_intent = new Intent(MainActivity.this, AccelerometerService.class);
         startService(accelerometer_intent);
+
+        gyroscope_intent = new Intent(MainActivity.this, GyroscopeService.class);
+        startService(gyroscope_intent);
 
     }
 

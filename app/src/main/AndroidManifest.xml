@@ -20,7 +20,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
+            android:name=".BackgroundService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".LocationService"
+            android:enabled="true" />
+        <service
             android:name=".AccelerometerService"
+            android:enabled="true" />
+        <service
+            android:name=".GyroscopeService"
             android:enabled="true" />
 
         <receiver
