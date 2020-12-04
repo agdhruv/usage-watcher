@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -15,6 +16,7 @@ public class BackgroundService extends Service {
 
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private static final String TAG = BackgroundService.class.getSimpleName();
+    private Intent accelerometer_intent;
 
     public BackgroundService() {
     }
@@ -22,10 +24,15 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        accelerometer_intent = new Intent(BackgroundService.this, AccelerometerService.class);
+        startService(accelerometer_intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "inOnStart");
+
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -34,7 +41,7 @@ public class BackgroundService extends Service {
                 .setContentTitle("Usage Watcher")
                 .setContentText("This is a notification from me")
                 .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentIntent(pendingIntent)
+//                .setContentIntent(pendingIntent)
                 .build();
         startForeground(1, notification);
 
@@ -46,17 +53,16 @@ public class BackgroundService extends Service {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_LOW
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(serviceChannel);
-            }
+            manager.createNotificationChannel(serviceChannel);
         }
     }
 
     @Override
     public void onDestroy() {
+        stopService(accelerometer_intent);
         super.onDestroy();
     }
 
