@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="azure_storage_string" translatable="false">DefaultEndpointsProtocol=https;AccountName=usagewatcher;AccountKey=i345lpeTZ7IPeHg6QoUEIqb4Z8aY+7pSPjilmnl9LBs4Zh6k8OD41BM42S8BBTHx/j4TAs7ELFLF/5EAIONnqA==;EndpointSuffix=core.windows.net</string>
+</resources>

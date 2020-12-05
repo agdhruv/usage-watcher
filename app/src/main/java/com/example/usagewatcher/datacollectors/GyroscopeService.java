@@ -1,4 +1,4 @@
-package com.example.usagewatcher;
+package com.example.usagewatcher.datacollectors;
 
 import android.app.Service;
 import android.content.Context;

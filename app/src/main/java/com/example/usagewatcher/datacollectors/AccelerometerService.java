@@ -1,4 +1,4 @@
-package com.example.usagewatcher;
+package com.example.usagewatcher.datacollectors;
 
 import android.app.Service;
 import android.content.Context;
@@ -15,8 +15,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     private SensorManager sensorManager;
     private Sensor sensor;
-    private static int random = (int)(Math.random() * 50 + 1);
-    private static String TAG = AccelerometerService.class.getSimpleName() + String.valueOf(random);
+    private static String TAG = AccelerometerService.class.getSimpleName();
 
     public AccelerometerService() {
     }

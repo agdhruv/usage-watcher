@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">UsageWatcher</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    <string name="data_collection_ongoing">Data collection ongoing</string>
 </resources>

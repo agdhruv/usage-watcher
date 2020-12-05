@@ -18,11 +18,9 @@ public class OnBootReceiver extends BroadcastReceiver {
         // if the received action is "boot completed", start the background service
         assert intentAction != null;
         if (intentAction.equals(Intent.ACTION_BOOT_COMPLETED)) {
-            // TODO: code to start the background service from the one shared by Mohit
             Log.d(TAG, "boot receiver onreceive");
             Intent serviceIntent = new Intent(context, BackgroundService.class);
-            serviceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+            // start the service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(serviceIntent);
             } else {

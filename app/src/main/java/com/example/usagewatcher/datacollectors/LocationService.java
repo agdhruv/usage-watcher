@@ -1,4 +1,4 @@
-package com.example.usagewatcher;
+package com.example.usagewatcher.datacollectors;
 
 import android.app.Service;
 import android.content.Intent;
@@ -80,8 +80,8 @@ public class LocationService extends Service {
         return true; // Ensures onRebind() is called when a client re-binds.
     }
 
-    class LocalBinder extends Binder {
-        LocationService getService() {
+    public class LocalBinder extends Binder {
+        public LocationService getService() {
             return LocationService.this;
         }
     }
