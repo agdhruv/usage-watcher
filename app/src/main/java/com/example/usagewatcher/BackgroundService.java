@@ -56,17 +56,20 @@ public class BackgroundService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        // call function function to make log directory if it's not already made
+        Utils.makeDirectory(getApplicationContext());
+
         // bind location service to this service
         Intent location_service_intent = new Intent(getApplicationContext(), LocationService.class);
         bindService(location_service_intent, locationServiceConnection, Context.BIND_AUTO_CREATE);
 
         // start accelerometer service
         accelerometer_intent = new Intent(BackgroundService.this, AccelerometerService.class);
-        startService(accelerometer_intent);
+//        startService(accelerometer_intent);
 
         // start gyroscope service
         gyroscope_intent = new Intent(BackgroundService.this, GyroscopeService.class);
-        startService(gyroscope_intent);
+//        startService(gyroscope_intent);
     }
 
     @Override
@@ -80,16 +83,6 @@ public class BackgroundService extends Service {
         startForeground(1, notification);
 
         return START_STICKY;
-    }
-
-    private Notification createNotification() {
-        Notification notification;
-        notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.data_collection_ongoing))
-                .setSmallIcon(R.drawable.notification_dot)
-                .build();
-
-        return notification;
     }
 
     @Override
@@ -121,5 +114,15 @@ public class BackgroundService extends Service {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }
+    }
+
+    private Notification createNotification() {
+        Notification notification;
+        notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.data_collection_ongoing))
+                .setSmallIcon(R.drawable.notification_dot)
+                .build();
+
+        return notification;
     }
 }

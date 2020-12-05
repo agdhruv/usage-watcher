@@ -3,6 +3,7 @@ package com.example.usagewatcher;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,12 +19,16 @@ public class MainActivity extends AppCompatActivity {
 //        CallLogs.getCallLog(getApplicationContext());
 //        AppUsage.getAppUsageData(getApplicationContext());
 
+        // start the foreground service
         Intent serviceIntent = new Intent(this, BackgroundService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
             startService(serviceIntent);
         }
+
+        // let the user know that data collection has started
+        Utils.displayToast(getApplicationContext(), getString(R.string.data_collection_has_started));
 
 //        ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
 //

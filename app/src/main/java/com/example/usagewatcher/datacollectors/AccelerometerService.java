@@ -9,7 +9,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
+
+import com.example.usagewatcher.Utils;
+
+import java.io.File;
 
 public class AccelerometerService extends Service implements SensorEventListener {
 
@@ -17,7 +20,13 @@ public class AccelerometerService extends Service implements SensorEventListener
     private Sensor sensor;
     private static String TAG = AccelerometerService.class.getSimpleName();
 
+    public static File acc_log_file = new File(Utils.dir, "ACC_Log.csv");
+    private int data_logged_and_not_sent;
+
     public AccelerometerService() {
+        // 141 seconds: 22.3 KB
+        // 1 seconds: 0.158 KB
+        // 1 day: 13.65 MB
     }
 
     @Override
@@ -25,6 +34,7 @@ public class AccelerometerService extends Service implements SensorEventListener
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        data_logged_and_not_sent = 0;
         requestAccelerometerUpdates();
 
         return START_STICKY;
@@ -39,9 +49,16 @@ public class AccelerometerService extends Service implements SensorEventListener
 
         // taken from: https://issuetracker.google.com/u/3/issues/36916900?pli=1
         long unixTime = System.currentTimeMillis() + ((event.timestamp - SystemClock.elapsedRealtimeNanos()) / 1000000L);
-        ;
 
-        Log.d(TAG, String.valueOf(axisX) + " " + String.valueOf(unixTime));
+        Utils.writeToFile(acc_log_file, unixTime + "," + axisX + "," +  axisY + "," + axisZ);
+        data_logged_and_not_sent += 1;
+
+        // if enough data has been logged, send it to the cloud
+        if (data_logged_and_not_sent > 100) {
+            Utils.sendAccFile(AccelerometerService.this);
+            data_logged_and_not_sent = 0;
+        }
+
     }
 
     @Override
@@ -61,10 +78,9 @@ public class AccelerometerService extends Service implements SensorEventListener
     private void requestAccelerometerUpdates() {
         // registers the listener
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        // TODO: see how many values we are getting per second. can we change the sampling frequency?
     }
 
-    public void removeAccelerometerUpdates() {
+    private void removeAccelerometerUpdates() {
         // unregisters the listener
         if (sensorManager != null) {
             sensorManager.unregisterListener(this);

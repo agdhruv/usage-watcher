@@ -102,7 +102,7 @@ class BlobStorage {
                             appendBlob.appendText("Search ID/Trip ID,Timestamp,Interaction Type,Initiator,Additional Information" + "\n");
                             break;
                         default:
-                            appendBlob.appendText("Trip ID,Timestamp,X,Y,Z" + "\n");
+                            appendBlob.appendText("Timestamp,X,Y,Z" + "\n");
                             break;
                     }
                 }
