@@ -1,4 +1,4 @@
-package com.example.usagewatcher;
+package com.example.usagewatcher.datacollectors;
 
 import android.app.Service;
 import android.content.Context;
@@ -11,21 +11,31 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class AccelerometerService extends Service implements SensorEventListener {
+import com.example.usagewatcher.Utils;
+
+import java.io.File;
+
+public class GyroscopeService extends Service implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor sensor;
-    private String TAG = AccelerometerService.class.getSimpleName();
+    private static String TAG = GyroscopeService.class.getSimpleName();
 
-    public AccelerometerService() {
+    public static File gyro_log_file = new File(Utils.dir, "GYRO_Log.csv");
+    private int data_logged_and_not_sent;
+
+    public GyroscopeService() {
+        // 160 seconds: 21.4 KB
+        // 1 seconds: 0.134 KB
+        // 1 day: 11.58 MB
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        requestAccelerometerUpdates();
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        requestGyroscopeUpdates();
 
         return START_STICKY;
     }
@@ -38,9 +48,17 @@ public class AccelerometerService extends Service implements SensorEventListener
         float axisZ = event.values[2];
 
         // taken from: https://issuetracker.google.com/u/3/issues/36916900?pli=1
-        long unixTime = System.currentTimeMillis() + ((event.timestamp - SystemClock.elapsedRealtimeNanos()) / 1000000L);;
+        long unixTime = System.currentTimeMillis() + ((event.timestamp - SystemClock.elapsedRealtimeNanos()) / 1000000L);
 
-        Log.d(TAG, String.valueOf(axisX) + " " + String.valueOf(unixTime));
+        Utils.writeToFile(gyro_log_file, unixTime + "," + axisX + "," +  axisY + "," + axisZ);
+        data_logged_and_not_sent += 1;
+
+        // if enough data has been logged, send it to the cloud
+        if (data_logged_and_not_sent > 100) {
+            Utils.sendGyroFile(GyroscopeService.this);
+            data_logged_and_not_sent = 0;
+        }
+
     }
 
     @Override
@@ -54,16 +72,15 @@ public class AccelerometerService extends Service implements SensorEventListener
 
     @Override
     public void onDestroy() {
-        removeAccelerometerUpdates();
+        removeGyroscopeUpdates();
     }
 
-    private void requestAccelerometerUpdates() {
-        Log.d(TAG, "registered");
+    private void requestGyroscopeUpdates() {
         // registers the listener
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public void removeAccelerometerUpdates() {
+    public void removeGyroscopeUpdates() {
         // unregisters the listener
         if (sensorManager != null) {
             sensorManager.unregisterListener(this);
