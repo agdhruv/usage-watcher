@@ -24,7 +24,7 @@ public class AccelerometerService extends Service implements SensorEventListener
     private int data_logged_and_not_sent;
 
     public AccelerometerService() {
-        // 141 seconds: 22.3 KB
+        // 141+e seconds: 22.3 KB
         // 1 seconds: 0.158 KB
         // 1 day: 13.65 MB
     }

@@ -8,12 +8,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-/*
 
- */
 public class SplashScreenActivity extends AppCompatActivity {
-
-    private Button button_grant_permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +26,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             Permissions.requestDialogPermissions(SplashScreenActivity.this);
         }
 
-        button_grant_permissions = findViewById(R.id.grant_permissions);
+        Button button_grant_permissions = findViewById(R.id.grant_permissions);
         button_grant_permissions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (has_all_permissions) {
             callMainActivity();
         } else {
+            Button button_grant_permissions = findViewById(R.id.grant_permissions);
             button_grant_permissions.findViewById(R.id.grant_permissions).setVisibility(View.VISIBLE);
         }
     }

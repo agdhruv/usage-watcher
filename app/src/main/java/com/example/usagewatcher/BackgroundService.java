@@ -65,11 +65,11 @@ public class BackgroundService extends Service {
 
         // start accelerometer service
         accelerometer_intent = new Intent(BackgroundService.this, AccelerometerService.class);
-//        startService(accelerometer_intent);
+        startService(accelerometer_intent);
 
         // start gyroscope service
         gyroscope_intent = new Intent(BackgroundService.this, GyroscopeService.class);
-//        startService(gyroscope_intent);
+        startService(gyroscope_intent);
     }
 
     @Override

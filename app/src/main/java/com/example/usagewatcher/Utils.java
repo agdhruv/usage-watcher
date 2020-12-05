@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.usagewatcher.datacollectors.AccelerometerService;
 import com.example.usagewatcher.datacollectors.GyroscopeService;
+import com.example.usagewatcher.datacollectors.LocationService;
 import com.example.usagewatcher.datastorage.FileHandler;
 
 import java.io.File;
@@ -70,6 +71,10 @@ public class Utils {
 
     public static void sendGyroFile(final Context c) {
         sendFile(c, "gyro_upload.csv", "gyro", GyroscopeService.gyro_log_file);
+    }
+
+    public static void sendGPSFile(final Context c) {
+        sendFile(c, "gps_upload.csv", "gps", LocationService.gps_log_file);
     }
 
     // write data to file

@@ -72,13 +72,8 @@ class BlobStorage {
             // end of the existing block blob
 
             String appendBlobName = fileType + ".csv";
-            if(fileType.equals("gps")) {
-                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                        .format(new Date());
-                appendBlobName = fileType + "-date-" + currentDate + ".csv";
-            }
-
             Log.d(TAG, appendBlobName);
+
             //get append blob instance from the container object
             CloudAppendBlob appendBlob = container
                     .getAppendBlobReference(appendBlobName);
@@ -91,19 +86,11 @@ class BlobStorage {
                 //if append blob with the specified name not exists then create one
                 if (!appendBlob.exists()) {
                     appendBlob.createOrReplace();
-                    switch (fileType) {
-                        case "gps":
-                            appendBlob.appendText("Trip ID,Timestamp,Latitude,Longitude" + "\n");
-                            break;
-                        case "backgroundgps":
-                            appendBlob.appendText("Timestamp,Latitude,Longitude" + "\n");
-                            break;
-                        case "user":
-                            appendBlob.appendText("Search ID/Trip ID,Timestamp,Interaction Type,Initiator,Additional Information" + "\n");
-                            break;
-                        default:
-                            appendBlob.appendText("Timestamp,X,Y,Z" + "\n");
-                            break;
+                    if (fileType.equals("gps")) {
+                        appendBlob.appendText("Timestamp,Latitude,Longitude" + "\n");
+                    } else {
+                        // acc and gyro
+                        appendBlob.appendText("Timestamp,X,Y,Z" + "\n");
                     }
                 }
                 appendBlob.append(logFile, fileSize);
