@@ -12,7 +12,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.usagewatcher.Utils;
+import com.example.usagewatcher.datastorage.FileUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -36,13 +36,15 @@ public class LocationService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
 
-    public static File gps_log_file = new File(Utils.dir, "GPS_Log.csv");
+    public static File gps_log_file = new File(FileUtils.dir, "GPS_Log.csv");
     private int locations_logged_and_not_sent;
 
     public LocationService() {
         // 123 seconds: 4.4 KB
         // 1 seconds: 0.036 KB
         // 1 day: 3.11 MB
+
+        // enable location is missing
     }
 
     @Override
@@ -139,11 +141,11 @@ public class LocationService extends Service {
 
     private void newLocationObtained(Location location) {
 
-        Utils.writeToFile(gps_log_file, location.getTime() + "," + location.getLatitude() + "," + location.getLongitude());
+        FileUtils.writeToFile(gps_log_file, location.getTime() + "," + location.getLatitude() + "," + location.getLongitude());
         locations_logged_and_not_sent += 1;
 
         if (locations_logged_and_not_sent > 30) {
-            Utils.sendGPSFile(LocationService.this);
+            FileUtils.sendGPSFile(LocationService.this);
             locations_logged_and_not_sent = 0;
         }
     }

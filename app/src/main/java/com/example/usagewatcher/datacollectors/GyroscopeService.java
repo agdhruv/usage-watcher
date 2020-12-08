@@ -9,9 +9,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
 
-import com.example.usagewatcher.Utils;
+import com.example.usagewatcher.datastorage.FileUtils;
 
 import java.io.File;
 
@@ -21,7 +20,7 @@ public class GyroscopeService extends Service implements SensorEventListener {
     private Sensor sensor;
     private static String TAG = GyroscopeService.class.getSimpleName();
 
-    public static File gyro_log_file = new File(Utils.dir, "GYRO_Log.csv");
+    public static File gyro_log_file = new File(FileUtils.dir, "GYRO_Log.csv");
     private int data_logged_and_not_sent;
 
     public GyroscopeService() {
@@ -50,12 +49,12 @@ public class GyroscopeService extends Service implements SensorEventListener {
         // taken from: https://issuetracker.google.com/u/3/issues/36916900?pli=1
         long unixTime = System.currentTimeMillis() + ((event.timestamp - SystemClock.elapsedRealtimeNanos()) / 1000000L);
 
-        Utils.writeToFile(gyro_log_file, unixTime + "," + axisX + "," +  axisY + "," + axisZ);
+        FileUtils.writeToFile(gyro_log_file, unixTime + "," + axisX + "," +  axisY + "," + axisZ);
         data_logged_and_not_sent += 1;
 
         // if enough data has been logged, send it to the cloud
         if (data_logged_and_not_sent > 100) {
-            Utils.sendGyroFile(GyroscopeService.this);
+            FileUtils.sendGyroFile(GyroscopeService.this);
             data_logged_and_not_sent = 0;
         }
 

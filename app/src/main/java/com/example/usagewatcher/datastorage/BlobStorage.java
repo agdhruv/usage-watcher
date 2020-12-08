@@ -13,9 +13,6 @@ import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 class BlobStorage {
 
@@ -88,6 +85,8 @@ class BlobStorage {
                     appendBlob.createOrReplace();
                     if (fileType.equals("gps")) {
                         appendBlob.appendText("Timestamp,Latitude,Longitude" + "\n");
+                    } else if (fileType.equals("calls")) {
+                        appendBlob.appendText("Timestamp,DateString,Duration,Direction,DirectionCode" + "\n");
                     } else {
                         // acc and gyro
                         appendBlob.appendText("Timestamp,X,Y,Z" + "\n");

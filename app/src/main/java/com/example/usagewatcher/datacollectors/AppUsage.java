@@ -26,7 +26,7 @@ public class AppUsage {
 
         // define the time range in which I want to fetch data
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, -1); // TODO: specify how long back I want data for
+        calendar.add(Calendar.MINUTE, -2); // TODO: specify how long back I want data for
         long start = calendar.getTimeInMillis();
         long end = System.currentTimeMillis();
 

@@ -1,11 +1,16 @@
 package com.example.usagewatcher;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.usagewatcher.datacollectors.CallLogs;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,8 +21,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        CallLogs.getCallLog(getApplicationContext());
-//        AppUsage.getAppUsageData(getApplicationContext());
+        startMainForegroundService();
+        setupAlarm();
+
+        // TODO: dump phone data (model, android version -- what else is available?)
+
+        // AppUsage.getAppUsageData(getApplicationContext());
+
+        // let the user know that data collection has started
+        Utils.displayToast(getApplicationContext(), getString(R.string.data_collection_has_started));
+
+    }
+
+    /*
+    Starts the foreground service that handles data that needs to be tracked continuously,
+    i.e., GPS, accelerometer, gyroscope.
+     */
+    private void startMainForegroundService() {
+        // TODO: only start the service if it isn't running already
 
         // start the foreground service
         Intent serviceIntent = new Intent(this, BackgroundService.class);
@@ -27,55 +48,23 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
-        // let the user know that data collection has started
-        Utils.displayToast(getApplicationContext(), getString(R.string.data_collection_has_started));
+    }
 
-//        ToggleButton alarmToggle = findViewById(R.id.alarmToggle);
-//
-//        // Set up the alarm broadcast intent.
-//        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
-//
-//        // check if there already exists the same pending intent, meaning the alarm is already on
-//        boolean alarmUp = (PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE, notifyIntent, PendingIntent.FLAG_NO_CREATE) != null);
-//        alarmToggle.setChecked(alarmUp);
-//
-//        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//
-//        // Set the click listener for the toggle button.
-//        alarmToggle.setOnCheckedChangeListener
-//                (new CompoundButton.OnCheckedChangeListener() {
-//                    @Override
-//                    public void onCheckedChanged
-//                            (CompoundButton buttonView, boolean isChecked) {
-//                        String toastMessage;
-//
-//                        if (isChecked) {
-//                            long repeatInterval = 30L;
-//                            long triggerTime = SystemClock.elapsedRealtime(); // the first alarm fires one second later
-//
-//                            // If the Toggle is turned on, set the repeating alarm with
-//                            // a 15 minute interval.
-//                            if (alarmManager != null) {
-//                                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
-//                            }
-//                            // Set the toast message for the "on" case.
-//                            toastMessage = "Alarm switched on";
-//
-//                        } else {
-//
-//                            if (alarmManager != null) {
-//                                alarmManager.cancel(notifyPendingIntent);
-//                            }
-//                            // Set the toast message for the "off" case.
-//                            toastMessage = "Alarm switched off";
-//                        }
-//
-//                        // Show a toast to say the alarm is turned on or off.
-//                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+    private void setupAlarm() {
 
+        // Set up the alarm broadcast intent.
+        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
+
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        long repeatInterval = Utils.CALL_LOGS_INTERVAL_HOURS * 60 * 60 * 1000; // interval to repeat after (in ms)
+
+        // set the repeating alarm
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatInterval, notifyPendingIntent);
+        }
 
     }
 

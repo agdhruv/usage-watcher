@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.usagewatcher.datacollectors.AccelerometerService;
 import com.example.usagewatcher.datacollectors.GyroscopeService;
 import com.example.usagewatcher.datacollectors.LocationService;
+import com.example.usagewatcher.datastorage.FileUtils;
 
 public class BackgroundService extends Service {
 
@@ -57,7 +58,7 @@ public class BackgroundService extends Service {
         super.onCreate();
 
         // call function function to make log directory if it's not already made
-        Utils.makeDirectory(getApplicationContext());
+        FileUtils.makeDirectory(getApplicationContext());
 
         // bind location service to this service
         Intent location_service_intent = new Intent(getApplicationContext(), LocationService.class);
