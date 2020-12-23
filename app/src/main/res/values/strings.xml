@@ -3,4 +3,5 @@
     <string name="grant_permissions">Grant Permissions</string>
     <string name="data_collection_ongoing">Data collection ongoing</string>
     <string name="data_collection_has_started">Data collection has started</string>
+    <string name="please_enable_location">Please Enable Location</string>
 </resources>

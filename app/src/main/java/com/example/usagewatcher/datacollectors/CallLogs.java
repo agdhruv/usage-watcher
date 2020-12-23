@@ -8,7 +8,6 @@ import android.provider.CallLog;
 import com.example.usagewatcher.datastorage.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,13 +16,15 @@ public class CallLogs {
 
     public static File calls_log_file;
 
+    // hash of phone number (last 10 digits)
+    // WhatsApp calling
+
     /*
     Fetches the call logs for the last num_hours and sends them to the cloud.
     However, it fetches data for (2 * num_hours) for redundancy. We don't want to loose date just
     in case any one run of this code fails.
      */
     public static void collectAndSend(Context context, int num_hours) {
-
         Calendar calendar = Calendar.getInstance();
         long start_timestamp = calendar.getTimeInMillis() - (2 * num_hours * 60 * 60 * 1000); // 24 hrs back, assuming 12 hours interval
 
@@ -45,7 +46,7 @@ public class CallLogs {
         StringBuilder sb = new StringBuilder();
 
         // these are the things we want to know about each call
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 CallLog.Calls.NUMBER,
                 CallLog.Calls.TYPE,
                 CallLog.Calls.DATE,
@@ -54,8 +55,8 @@ public class CallLogs {
 
         // sql syntax-like WHERE clause
         String selection = "CAST(" + CallLog.Calls.DATE + " as LONG) >= CAST(? as LONG)";
-        String[] selectionArgs = new String[] {
-          start_timestamp_ms
+        String[] selectionArgs = new String[]{
+                start_timestamp_ms
         };
 
         // go through the data to get the call logs
@@ -90,7 +91,15 @@ public class CallLogs {
                     direction = "UNKNOWN";
             }
 
-            sb.append(date).append(",").append(dateString).append(",").append(duration).append(",").append(direction).append(",").append(direction_code).append("\n");
+            // store last 4 digits of the phone number
+            String lastFourDigits;
+            if (number.length() > 4) {
+                lastFourDigits = number.substring(number.length() - 4);
+            } else {
+                lastFourDigits = number;
+            }
+
+            sb.append(date).append(",").append(lastFourDigits).append(",").append(dateString).append(",").append(duration).append(",").append(direction).append(",").append(direction_code).append("\n");
 
         }
 

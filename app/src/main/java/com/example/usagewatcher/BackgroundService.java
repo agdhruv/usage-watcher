@@ -71,6 +71,9 @@ public class BackgroundService extends Service {
         // start gyroscope service
         gyroscope_intent = new Intent(BackgroundService.this, GyroscopeService.class);
         startService(gyroscope_intent);
+
+        // set up battery receiver
+
     }
 
     @Override

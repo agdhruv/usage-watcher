@@ -8,18 +8,13 @@
 
     <Button
         android:id="@+id/grant_permissions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
         android:text="@string/grant_permissions"
-        android:textColor="@color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_heading" />
+        app:layout_constraintTop_toBottomOf="@+id/app_heading"
+        style="@style/permissions_button" />
 
     <TextView
         android:id="@+id/app_heading"

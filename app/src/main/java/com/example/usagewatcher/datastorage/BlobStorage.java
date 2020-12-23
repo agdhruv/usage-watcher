@@ -83,13 +83,20 @@ class BlobStorage {
                 //if append blob with the specified name not exists then create one
                 if (!appendBlob.exists()) {
                     appendBlob.createOrReplace();
-                    if (fileType.equals("gps")) {
-                        appendBlob.appendText("Timestamp,Latitude,Longitude" + "\n");
-                    } else if (fileType.equals("calls")) {
-                        appendBlob.appendText("Timestamp,DateString,Duration,Direction,DirectionCode" + "\n");
-                    } else {
-                        // acc and gyro
-                        appendBlob.appendText("Timestamp,X,Y,Z" + "\n");
+                    switch (fileType) {
+                        case "gps":
+                            appendBlob.appendText("Timestamp,Latitude,Longitude" + "\n");
+                            break;
+                        case "calls":
+                            appendBlob.appendText("Timestamp,NumberID,DateString,Duration,Direction,DirectionCode" + "\n");
+                            break;
+                        case "app_events":
+                            appendBlob.appendText("Timestamp,PackageName,EventType" + "\n");
+                            break;
+                        default:
+                            // acc and gyro
+                            appendBlob.appendText("Timestamp,X,Y,Z" + "\n");
+                            break;
                     }
                 }
                 appendBlob.append(logFile, fileSize);

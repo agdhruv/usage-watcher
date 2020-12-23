@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.usagewatcher.datacollectors.AccelerometerService;
+import com.example.usagewatcher.datacollectors.AppUsage;
 import com.example.usagewatcher.datacollectors.CallLogs;
 import com.example.usagewatcher.datacollectors.GyroscopeService;
 import com.example.usagewatcher.datacollectors.LocationService;
@@ -83,5 +84,9 @@ public class FileUtils {
 
     public static void sendCallLogsFile(final Context c) {
         sendFile(c, "calls_upload.csv", "calls", CallLogs.calls_log_file);
+    }
+
+    public static void sendAppEventsFile(final Context c) {
+        sendFile(c, "app_events_upload.csv", "app_events", AppUsage.app_events_file);
     }
 }

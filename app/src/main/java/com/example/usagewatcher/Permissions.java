@@ -67,4 +67,17 @@ public class Permissions {
             context.startActivity(intent);
         }
     }
+
+    public static boolean isLocationEnabled(Context context) {
+        // https://stackoverflow.com/a/54648795
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            return lm.isLocationEnabled();
+        } else {
+            int mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            return  (mode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
 }
